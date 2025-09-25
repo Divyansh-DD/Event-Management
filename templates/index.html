@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="text-4xl font-bold text-blue-800 mb-8 text-center">Upcoming Events</h2>
+<div class="container mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  {% if events %}
+  {% for event in events %}
+  <div
+    class="card bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl opacity-0"
+    data-index="{{ loop.index0 }}">
+    <div class="p-6">
+      <h3 class="text-2xl font-semibold text-gray-800 mb-3">{{ event.title }}</h3>
+      <p class="text-gray-600 mb-2"><strong>Date:</strong> {{ event.date }}</p>
+      <p class="text-gray-600 mb-4"><strong>Location:</strong> {{ event.location }}</p>
+      <div class="flex space-x-4">
+        <a href="{{ url_for('event_info', event_id=event.id) }}"
+          class="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200">Info</a>
+        <a href="{{ url_for('register', event_id=event.id) }}"
+          class="inline-block bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-200">Register</a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+  <p class="text-center text-gray-500 text-lg">No events available.</p>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.tailwindcss.com/3.3.3"></script>
+<script>
+  console.log("Script loaded")
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded');
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+      setTimeout(() => {
+        card.style.opacity = '1';
+        card.classList.add('animate-fade-in');
+        console.log(`Animated card ${index}`);
+      }, index * 200); 
+    });
+
+    cards.forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        card.style.transform = 'scale(1.05)';
+        card.style.boxShadow = '0 10px 20px rgba(0, 0, 0, 0.2)';
+        console.log('Hover in');
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'scale(1)';
+        card.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
+        console.log('Hover out');
+      });
+    });
+  });
+</script>
+<style>
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
+{% endblock %}

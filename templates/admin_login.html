@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+  <h2 class="text-2xl font-bold text-blue-800 mb-6 text-center">Admin Login</h2>
+  <form method="POST" action="" class="custom-form">
+    <div class="space-y-4">
+      <div>
+        <label class="block text-gray-700 font-medium">Username</label>
+        <input type="text" name="username"
+          class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required>
+      </div>
+      <div>
+        <label class="block text-gray-700 font-medium">Password</label>
+        <input type="password" name="password"
+          class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required>
+      </div>
+      <div>
+        <button type="submit"
+          class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition duration-200 w-full">Login</button>
+      </div>
+    </div>
+    {% if error %}
+    <p class="text-red-500 text-center mt-4">{{ error }}</p>
+    {% endif %}
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .custom-form {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 1.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+</style>
+{% endblock %}

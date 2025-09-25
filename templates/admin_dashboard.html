@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mx-auto px-4 py-8 text-center">
+  <h2 class="text-2xl font-bold text-blue-800 mb-4">Admin Dashboard</h2>
+  <p class="text-gray-600">Welcome to the admin panel. Manage events and registrations here.</p>
+
+  <a href="{{ url_for('download_csv') }}"
+    class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200">📥
+    Download CSV</a>
+
+  <a href="{{ url_for('admin_logout') }}"
+    class="mt-4 inline-block bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200">🚪
+    Logout</a>
+
+  <h3 class="text-xl font-semibold text-gray-800 mt-6">Registrations</h3>
+  <table class="mt-4 mx-auto border-collapse border border-gray-300">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="border border-gray-300 p-2">ID</th>
+        <th class="border border-gray-300 p-2">Name</th>
+        <th class="border border-gray-300 p-2">Email</th>
+        <th class="border border-gray-300 p-2">Event</th>
+        <th class="border border-gray-300 p-2">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for reg in registrations %}
+      <tr>
+        <td class="border border-gray-300 p-2">{{ reg.id }}</td>
+        <td class="border border-gray-300 p-2">{{ reg.name }}</td>
+        <td class="border border-gray-300 p-2">{{ reg.email }}</td>
+        <td class="border border-gray-300 p-2">{{ reg.event }}</td>
+        <td class="border border-gray-300 p-0 text-center bg-transparent">
+          <form action="{{ url_for('delete_registration', reg_id=reg.id) }}" method="post"
+            class="inline-block m-0 p-0 bg-transparent">
+            <button type="submit" class="bg-white-500 text-white text-[10px] px-1 py-[1px] rounded hover:bg-red-600 border-none">
+              ❌
+            </button>
+          </form>
+        </td>
+
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.tailwindcss.com"></script>
+{% endblock %}
