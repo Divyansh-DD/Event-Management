@@ -8,10 +8,13 @@ import logging
 from io import StringIO
 import csv
 from datetime import datetime
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, instance_relative_config=True)
+if not os.path.exists(app.instance_path):
+    os.makedirs(app.instance_path)
 app.config['SECRET_KEY'] = 'your-secret-key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///events.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(app.instance_path, 'events.db')
 db = SQLAlchemy(app)
 
 logging.basicConfig(level=logging.DEBUG)
@@ -25,13 +28,13 @@ class Event(db.Model):
     registrations = db.relationship('Registration', backref='event', lazy=True)
 
 class Registration(db.Model):
+    __table_args__ = (db.UniqueConstraint('email', 'event_id', name='uix_email_event'),)
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(120), nullable=False, unique=True)
+    email = db.Column(db.String(120), nullable=False)
     phone = db.Column(db.String(15), nullable=False)
     year = db.Column(db.String(10), nullable=False)
     branch = db.Column(db.String(50), nullable=False)
-    after_note = db.Column(db.Text, nullable=True)
     event_id = db.Column(db.Integer, db.ForeignKey('event.id'), nullable=False)
 
 class RegistrationForm(FlaskForm):
@@ -40,7 +43,6 @@ class RegistrationForm(FlaskForm):
     phone = StringField('Phone', validators=[DataRequired(), Regexp(r'^\d{10}$', message="Phone must be 10 digits")])
     year = StringField('Year', validators=[DataRequired()])
     branch = StringField('Branch', validators=[DataRequired()])
-    after_note = TextAreaField('Additional Notes', validators=[Length(max=500)])
     submit = SubmitField('Register')
 
 def seed_events():
@@ -86,7 +88,6 @@ def register():
                 phone=form.phone.data,
                 year=form.year.data,
                 branch=form.branch.data,
-                after_note=form.after_note.data,
                 event_id=int(event_id)
             )
             db.session.add(new_registration)
@@ -94,7 +95,12 @@ def register():
             return redirect(url_for('success'))
         except IntegrityError as e:
             db.session.rollback()
-            return render_template('register.html', form=form, error="Registration failed: Email already exists or database error.")
+            logger.error(f"IntegrityError: {str(e)}")
+            return render_template(
+                'register.html',
+                form=form,
+                error="Registration failed: Email already exists for this event."
+            )
         except Exception as e:
             db.session.rollback()
             return render_template('register.html', form=form, error=f"Registration failed: {str(e)}")
