@@ -13,7 +13,8 @@ import os
 app = Flask(__name__, instance_relative_config=True)
 if not os.path.exists(app.instance_path):
     os.makedirs(app.instance_path)
-app.config['SECRET_KEY'] = 'your-secret-key'
+import os
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(app.instance_path, 'events.db')
 db = SQLAlchemy(app)
 
