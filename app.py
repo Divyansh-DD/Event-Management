@@ -156,7 +156,6 @@ def download_csv():
     output = StringIO()
     writer = csv.writer(output)
     
-    # Remove "After Note" column
     writer.writerow(['ID', 'Name', 'Email', 'Phone', 'Year', 'Branch', 'Event'])
     
     registrations = Registration.query.all()
