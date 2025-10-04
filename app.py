@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, Response, session, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SubmitField
+from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, Email, Length, Regexp
 from sqlalchemy.exc import IntegrityError
 import logging
