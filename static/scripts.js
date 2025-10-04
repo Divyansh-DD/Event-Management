@@ -26,7 +26,7 @@ function validateForm(event) {
     !year.value ||
     !branch.value
   ) {
-    alert("All fields except 'After registration' are required!");
+    alert("All fields are required!");
     return false;
   }
   if (!email.value.includes("@")) {
