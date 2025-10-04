@@ -33,7 +33,7 @@ function validateForm(event) {
     alert("Invalid email format!");
     return false;
   }
-  if (!/^\d{10,}$/.test(phone.value)) {
+  if (!/^\d{10}$/.test(phone.value)) {
     alert("Phone must be a valid 10+ digit number!");
     return false;
   }
